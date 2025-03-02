@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostgresEmployeeModule } from './postgres/modules/employee/employee.module';
 import { MongoEmployeeModule } from './mongo/modules/employee/employee.module';
+import { Neo4jEmployeeModule } from './neo4j/modules/employee/employee.module';
 import { Employee as PostgresEmployee } from './postgres/entities/employee.entity';
 import { Resume as PostgresResume } from './postgres/entities/resume.entity';
 import { Hobby as PostgresHobby } from './postgres/entities/hobby.entity';
@@ -39,6 +40,7 @@ import { WorkExperience as MongoWorkExperience } from './mongo/entities/workexpe
     
     PostgresEmployeeModule,
     MongoEmployeeModule,
+    Neo4jEmployeeModule,
   ],
   controllers: [],
   providers: [],

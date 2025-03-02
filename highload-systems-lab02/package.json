@@ -10,7 +10,8 @@
     "schema:sync:postgres": "npx typeorm-ts-node-commonjs schema:sync -d src/postgres/data-source-postgres.ts",
     "schema:sync:mongo": "npx typeorm-ts-node-commonjs schema:sync -d src/mongo/data-source-mongo.ts",
     "seed:postgres": "ts-node src/postgres/seed.ts",
-    "seed:mongo": "ts-node src/mongo/seed.ts"
+    "seed:mongo": "ts-node src/mongo/seed.ts",
+    "seed:neo4j": "ts-node src/neo4j/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -18,12 +19,14 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.0",
     "mongodb": "^5.9.2",
+    "neo4j-driver": "^5.28.1",
     "pg": "^8.0.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.0"
   },
   "devDependencies": {
     "@types/node": "^16.0.0",
+    "@types/uuid": "^10.0.0",
     "ts-node": "^10.0.0",
     "ts-node-dev": "^1.0.0",
     "tsconfig-paths": "^3.0.0",
