@@ -7,15 +7,17 @@
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "node_modules/.bin/tsc --noEmit",
-    "migration:sync": "npx typeorm-ts-node-commonjs schema:sync -d data-source.ts",
-    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d data-source.ts",
-    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d data-source.ts"
+    "schema:sync:postgres": "npx typeorm-ts-node-commonjs schema:sync -d src/postgres/data-source-postgres.ts",
+    "schema:sync:mongo": "npx typeorm-ts-node-commonjs schema:sync -d src/mongo/data-source-mongo.ts",
+    "seed:postgres": "ts-node src/postgres/seed.ts",
+    "seed:mongo": "ts-node src/mongo/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.0",
+    "mongodb": "^5.9.2",
     "pg": "^8.0.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.0"
@@ -24,7 +26,7 @@
     "@types/node": "^16.0.0",
     "ts-node": "^10.0.0",
     "ts-node-dev": "^1.0.0",
-    "typescript": "^4.0.0",
-    "tsconfig-paths": "^3.0.0"
+    "tsconfig-paths": "^3.0.0",
+    "typescript": "^4.0.0"
   }
 }

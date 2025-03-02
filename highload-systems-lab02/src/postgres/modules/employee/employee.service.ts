@@ -1,22 +1,22 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Employee } from '../../entities/employee.entity';
-import { Resume } from '../../entities/resume.entity';
-import { Hobby } from '../../entities/hobby.entity';
+import { Employee } from '../../../postgres/entities/employee.entity';
+import { Resume } from '../../../postgres/entities/resume.entity';
+import { Hobby } from '../../../postgres/entities/hobby.entity';
 
 @Injectable()
 export class EmployeeService {
   constructor(
     // @ts-ignore-next-line
-    @InjectRepository(Resume)
+    @InjectRepository(Resume, 'postgres')
     private readonly resumeRepository: Repository<Resume>
   ) {}
 
   async getResume(employeeId: number): Promise<Resume | null> {
     return this.resumeRepository.findOne({
       where: { employee: { id: employeeId } },
-      relations: ['employee', 'workExperiences', 'hobbies'],
+      relations: ['workExperiences', 'hobbies'],
     });
   }
 

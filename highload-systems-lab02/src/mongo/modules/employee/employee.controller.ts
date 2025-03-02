@@ -1,17 +1,17 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 
-@Controller('employee')
+@Controller('mongo/employee')
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
   @Get(':id/resume')
-  async getEmployeeResume(@Param('id', ParseIntPipe) id: number) {
+  async getEmployeeResume(@Param('id') id: string) {
     return await this.employeeService.getResume(id);
   }
 
   @Get(':id/resume/hobbies')
-  async getEmployeeHobbies(@Param('id', ParseIntPipe) id: number) {
+  async getEmployeeHobbies(@Param('id') id: string) {
     return await this.employeeService.getHobbies(id);
   }
 
@@ -27,11 +27,15 @@ export class EmployeeController {
 
   @Get('resume/hobbies/by-city')
   async getHobbiesByCity(@Query('city') city: string) {
+    if (!city) {
+      throw new BadRequestException('City is required');
+    }
+    
     return await this.employeeService.getHobbiesByCity(city);
   }
 
   @Get('group-by-company')
-  async getEmployeesByCompany(@Query('min-employees') minEmployees: number = 1) {
+  async getEmployeesByCompany(@Query('min-employees', ParseIntPipe) minEmployees: number) {
     return await this.employeeService.getEmployeesByCompany(minEmployees);
   }
 } 
