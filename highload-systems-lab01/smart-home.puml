@@ -1,0 +1,75 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam linetype polyline
+skinparam linetype ortho
+
+!theme aws-orange
+title Smart home management system
+
+node "Smart Home Hub" as hub {
+  component [Device A] as A
+  component [Device B] as B
+}
+
+note top of hub
+  Mesh Network:
+  Each device acts as a peer in a P2P network.
+end note
+
+' Direct P2P connections:
+A <--> B : Direct P2P
+
+cloud "Server" as cld {
+  rectangle "k8s cluster" as k8s {
+    component "MQTT Broker" as MQTT
+    component "Server App" as server_app
+  }
+  database "Redis" as redis
+  database "MySQL" as mysql
+}
+
+note bottom of MQTT
+  MQTT Broker receives all messages from the clients
+  and then routes the messages to the appropriate destination clients
+end note
+
+note bottom of redis
+  Cache frequently accessed data
+  to reduce load on the database and/or broker
+end note
+
+note right of k8s
+  Kubernetes is responsible for the server infra management:
+  - Scaling: manages number of replicas as traffic increases (HPA)
+  - Load balancing: distributes incoming requests
+  - Reliability: restarts failed containers
+end note
+
+server_app --> MQTT : pub/sub
+server_app --> redis
+server_app --> mysql
+
+rectangle "Users" as users {
+  actor "User 1" as user1
+  actor "User 2" as user2
+}
+
+component "Client application" as client_app
+
+note top of client_app
+    Dashboard for users
+    to manage devices, view events, etc.
+end note
+
+
+
+user1 --> client_app
+user2 --> client_app
+client_app --> server_app : REST API
+
+
+
+A --> MQTT : pub/sub
+B --> MQTT : pub/sub
+
+@enduml
