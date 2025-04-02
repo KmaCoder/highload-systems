@@ -1,0 +1,84 @@
+version: '3.8'
+services:
+  postgres-primary:
+    image: bitnami/postgresql-repmgr:14
+    hostname: postgres-primary
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRESQL_POSTGRES_PASSWORD=postgres
+      - POSTGRESQL_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRESQL_DATABASE=postgres
+      - REPMGR_PASSWORD=repmgr
+      - REPMGR_PRIMARY_HOST=postgres-primary
+      - REPMGR_PRIMARY_PORT=5432
+      - REPMGR_PARTNER_NODES=postgres-primary,postgres-replica
+      - REPMGR_NODE_NAME=primary-1
+      - REPMGR_NODE_NETWORK_NAME=postgres-primary
+      - REPMGR_PORT_NUMBER=5432
+      - REPMGR_NODE_ID=1
+    volumes:
+      - postgres_primary_data:/bitnami/postgresql
+    networks:
+      - postgres-ha-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-replica:
+    image: bitnami/postgresql-repmgr:14
+    hostname: postgres-replica
+    ports:
+      - "5433:5432"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    environment:
+      - POSTGRESQL_POSTGRES_PASSWORD=postgres
+      - POSTGRESQL_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRESQL_DATABASE=postgres
+      - REPMGR_PASSWORD=repmgr
+      - REPMGR_PRIMARY_HOST=postgres-primary
+      - REPMGR_PRIMARY_PORT=5432
+      - REPMGR_PARTNER_NODES=postgres-primary,postgres-replica
+      - REPMGR_NODE_NAME=standby-2
+      - REPMGR_NODE_NETWORK_NAME=postgres-replica
+      - REPMGR_PORT_NUMBER=5432
+      - REPMGR_NODE_ID=2
+    volumes:
+      - postgres_replica_data:/bitnami/postgresql
+    networks:
+      - postgres-ha-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  haproxy:
+    image: haproxy:latest
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "5010:5000"  # PostgreSQL primary (read-write)
+      - "5011:5001"  # PostgreSQL replica (read-only)
+      - "7010:7000"  # Admin page
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+      postgres-replica:
+        condition: service_healthy
+    networks:
+      - postgres-ha-network
+
+volumes:
+  postgres_primary_data:
+  postgres_replica_data:
+
+networks:
+  postgres-ha-network:
+    driver: bridge
