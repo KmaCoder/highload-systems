@@ -1,0 +1,72 @@
+version: '3.8'
+services:
+  postgres-primary1:
+    image: postgres:14
+    hostname: postgres-primary1
+    ports:
+      - "5442:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=postgres
+    command: 
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+    volumes:
+      - postgres_primary1_data:/var/lib/postgresql/data
+      - ./init-primary1.sql:/docker-entrypoint-initdb.d/init-primary1.sql
+    networks:
+      - postgres-primary-primary-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  postgres-primary2:
+    image: postgres:14
+    hostname: postgres-primary2
+    ports:
+      - "5443:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=postgres
+    command: 
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+    volumes:
+      - postgres_primary2_data:/var/lib/postgresql/data
+      - ./init-primary2.sql:/docker-entrypoint-initdb.d/init-primary2.sql
+    networks:
+      - postgres-primary-primary-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  haproxy-primary-primary:
+    image: haproxy:latest
+    volumes:
+      - ./haproxy-primary-primary.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "5020:5000"  # Load balancer for write operations
+      - "7020:7000"  # Admin page
+    depends_on:
+      postgres-primary1:
+        condition: service_healthy
+      postgres-primary2:
+        condition: service_healthy
+    networks:
+      - postgres-primary-primary-network
+
+volumes:
+  postgres_primary1_data:
+  postgres_primary2_data:
+
+networks:
+  postgres-primary-primary-network:
+    driver: bridge
