@@ -15,6 +15,9 @@ service LightbulbService {
   
   // Set the color temperature of the lightbulb
   rpc SetColorTemperature(SetColorTemperatureRequest) returns (LightbulbState) {}
+  
+  // Stream the lightbulb state changes in real-time
+  rpc StreamState(StreamStateRequest) returns (stream LightbulbState) {}
 }
 
 // Empty request for getting the current state
@@ -33,6 +36,12 @@ message SetBrightnessRequest {
 // Request to set the color temperature
 message SetColorTemperatureRequest {
   int32 temperature = 1; // 2700-6500K (typical range for lightbulbs)
+}
+
+// Request for streaming state updates
+message StreamStateRequest {
+  // Optional update interval in milliseconds (default: 1000)
+  int32 interval_ms = 1;
 }
 
 // Current state of the lightbulb

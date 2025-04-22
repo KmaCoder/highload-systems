@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Lightbulb from './components/Lightbulb';
 import ControlPanel from './components/ControlPanel';
@@ -10,26 +10,37 @@ function App() {
     brightness: 50,
     colorTemperature: 4000
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isStreaming, setIsStreaming] = useState(false);
 
-  // Fetch initial state when component mounts
+  // Set up streaming when component mounts
   useEffect(() => {
-    const fetchState = async () => {
-      try {
-        setLoading(true);
-        const bulbState = await LightbulbService.getState();
-        setState(bulbState);
-        setError(null);
-      } catch (err) {
-        console.error('Failed to fetch bulb state:', err);
-        setError('Failed to connect to the server. Make sure it is running.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const cancelStream = LightbulbService.streamState(
+        500,
+        (newState) => {
+          setState(newState);
+          setError(null);
+        },
+        (err) => {
+          console.error('Stream error:', err);
+          setError('Stream connection error.');
+          setIsStreaming(false);
+        }
+      );
+      
+      setIsStreaming(true);
 
-    fetchState();
+      return () => {
+        cancelStream();
+        setIsStreaming(false);
+      };
+    } catch (err) {
+      console.error('Failed to start streaming:', err);
+      setError('Failed to start streaming.');
+      setIsStreaming(false);
+    }
   }, []);
 
   // Handle power toggle
@@ -81,6 +92,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Smart Lightbulb Control</h1>
+        {isStreaming && <div className="streaming-indicator">Live Updates Active</div>}
       </header>
 
       <main>

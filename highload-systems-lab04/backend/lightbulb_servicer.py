@@ -1,6 +1,8 @@
 import logging
+import time
 import lightbulb_pb2 as lightbulb_pb2
 import lightbulb_pb2_grpc as lightbulb_pb2_grpc
+import grpc
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -49,3 +51,24 @@ class LightbulbServicer(lightbulb_pb2_grpc.LightbulbServiceServicer):
         logger.info("SetColorTemperature request received: %s", temperature)
         self.state["color_temperature"] = temperature
         return self._get_current_state()
+        
+    """Stream the lightbulb state at regular intervals."""
+    def StreamState(self, request, context):
+        logger.info("StreamState request received with interval_ms: %s", request.interval_ms)
+        
+        # Use default interval of 1000ms if not specified or invalid
+        interval_seconds = max(0.1, request.interval_ms / 1000.0) if request.interval_ms > 0 else 1.0
+        
+        try:
+            # Continue streaming until client disconnects
+            while context.is_active():
+                # Send current state
+                yield self._get_current_state()
+
+                # Wait for the specified interval
+                time.sleep(interval_seconds)
+                
+        except Exception as e:
+            logger.error("Error in StreamState: %s", str(e))
+            context.set_details(f"Stream interrupted: {str(e)}")
+            context.set_code(grpc.StatusCode.INTERNAL)
