@@ -1,0 +1,46 @@
+{
+    "name": "lightbulb-control-client",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "build": "react-scripts build",
+        "eject": "react-scripts eject",
+        "generate-proto": "./generate_protos.sh",
+        "start": "react-scripts start",
+        "test": "react-scripts test"
+    },
+    "browserslist": {
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ],
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ]
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "dependencies": {
+        "@grpc/grpc-js": "^1.9.2",
+        "@grpc/proto-loader": "^0.7.9",
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "google-protobuf": "^3.21.2",
+        "grpc-web": "^1.4.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-scripts": "5.0.1",
+        "web-vitals": "^2.1.4"
+    },
+    "devDependencies": {
+        "protoc-gen-grpc-web": "^1.4.2"
+    }
+}

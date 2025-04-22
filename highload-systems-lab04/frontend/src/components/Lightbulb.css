@@ -1,0 +1,21 @@
+.lightbulb-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.lightbulb-cap {
+  width: 30px;
+  height: 20px;
+  background-color: #909090;
+  border-radius: 5px 5px 0 0;
+}
+
+.lightbulb {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #ffeb3b;
+  transition: all 0.3s ease;
+} 

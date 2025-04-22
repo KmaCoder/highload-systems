@@ -1,0 +1,15 @@
+version: '3'
+services:
+  envoy:
+    image: envoyproxy/envoy:v1.26.1
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    networks:
+      - lightbulb-network
+
+networks:
+  lightbulb-network:
+    driver: bridge

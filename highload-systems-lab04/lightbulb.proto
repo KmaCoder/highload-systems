@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package lightbulb;
+
+// Service definition for controlling a lightbulb
+service LightbulbService {
+  // Get the current state of the lightbulb
+  rpc GetState(GetStateRequest) returns (LightbulbState) {}
+  
+  // Turn the lightbulb on or off
+  rpc SetPower(SetPowerRequest) returns (LightbulbState) {}
+  
+  // Set the brightness of the lightbulb
+  rpc SetBrightness(SetBrightnessRequest) returns (LightbulbState) {}
+  
+  // Set the color temperature of the lightbulb
+  rpc SetColorTemperature(SetColorTemperatureRequest) returns (LightbulbState) {}
+}
+
+// Empty request for getting the current state
+message GetStateRequest {}
+
+// Request to set the power state
+message SetPowerRequest {
+  bool is_on = 1;
+}
+
+// Request to set the brightness
+message SetBrightnessRequest {
+  int32 brightness = 1; // 0-100
+}
+
+// Request to set the color temperature
+message SetColorTemperatureRequest {
+  int32 temperature = 1; // 2700-6500K (typical range for lightbulbs)
+}
+
+// Current state of the lightbulb
+message LightbulbState {
+  bool is_on = 1;
+  int32 brightness = 2; // 0-100
+  int32 color_temperature = 3; // 2700-6500K
+} 
