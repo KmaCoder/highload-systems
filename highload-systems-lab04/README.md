@@ -2,6 +2,9 @@
 
 This project demonstrates a smart lightbulb control system with gRPC for the main API and RabbitMQ for event notifications.
 
+https://github.com/user-attachments/assets/6976001b-704c-474d-b136-48ce6bbd0a8f
+
+
 ## Project Components
 
 1. **Python Backend**: gRPC service for controlling the lightbulb
