@@ -1,0 +1,52 @@
+services:
+  cfg1:
+    container_name: cfg1
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongod --configsvr --replSet cfgrs --dbpath /data/db --port 27017 --bind_ip_all
+    ports:
+      - 10001:27017
+    volumes:
+      - cfg1_data:/data/db
+    networks:
+      - mongo_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  
+  cfg2:
+    container_name: cfg2
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongod --configsvr --replSet cfgrs --dbpath /data/db --port 27017 --bind_ip_all
+    ports:
+      - 10002:27017
+    volumes:
+      - cfg2_data:/data/db
+    networks:
+      - mongo_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  cfg3:
+    container_name: cfg3
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongod --configsvr --replSet cfgrs --dbpath /data/db --port 27017 --bind_ip_all
+    ports:
+      - 10003:27017
+    volumes:
+      - cfg3_data:/data/db
+    networks:
+      - mongo_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  cfg1_data:
+  cfg2_data:
+  cfg3_data:
+
+networks:
+  mongo_network:
+    name: mongo_network
+    driver: bridge

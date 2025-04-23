@@ -1,0 +1,17 @@
+services:
+  mongos:
+    container_name: mongos
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongos --configdb cfgrs/host.docker.internal:10001,host.docker.internal:10002,host.docker.internal:10003 --port 27017 --bind_ip_all
+    ports:
+      - 30000:27017
+    networks:
+      - mongo_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  mongo_network:
+    external:
+      name: mongo_network

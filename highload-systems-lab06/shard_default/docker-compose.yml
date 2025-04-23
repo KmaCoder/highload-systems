@@ -1,0 +1,52 @@
+services:
+  shard_default_1:
+    container_name: shard_default_1
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongod --shardsvr --replSet shard_default_rs --dbpath /data/db --port 27017 --bind_ip_all
+    ports:
+      - 20021:27017
+    volumes:
+      - shard_default_data_1:/data/db
+    networks:
+      - mongo_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  
+  shard_default_2:
+    container_name: shard_default_2
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongod --shardsvr --replSet shard_default_rs --dbpath /data/db --port 27017 --bind_ip_all
+    ports:
+      - 20022:27017
+    volumes:
+      - shard_default_data_2:/data/db
+    networks:
+      - mongo_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  
+  shard_default_3:
+    container_name: shard_default_3
+    image: mongo:latest
+    restart: unless-stopped
+    command: mongod --shardsvr --replSet shard_default_rs --dbpath /data/db --port 27017 --bind_ip_all
+    ports:
+      - 20023:27017
+    volumes:
+      - shard_default_data_3:/data/db
+    networks:
+      - mongo_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  shard_default_data_1:
+  shard_default_data_2:
+  shard_default_data_3:
+
+networks:
+  mongo_network:
+    external:
+      name: mongo_network

@@ -1,0 +1,13 @@
+{
+    "name": "mongodb-sharding-seed",
+    "version": "1.0.0",
+    "description": "Seed script for MongoDB sharded cluster",
+    "main": "seed.js",
+    "scripts": {
+        "seed": "node seed.js"
+    },
+    "dependencies": {
+        "@faker-js/faker": "^7.6.0",
+        "mongodb": "^4.13.0"
+    }
+}
