@@ -18,7 +18,6 @@ function App() {
   useEffect(() => {
     try {
       const cancelStream = LightbulbService.streamState(
-        500,
         (newState) => {
           setState(newState);
           setError(null);

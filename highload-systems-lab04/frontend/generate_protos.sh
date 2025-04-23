@@ -5,7 +5,7 @@ set -e
 # Frontend directory (where this script is located)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 PROTO_DIR="${SCRIPT_DIR}/src/proto"
-SOURCE_PROTO="$(dirname "${SCRIPT_DIR}")/lightbulb.proto"
+SOURCE_PROTO="$(dirname "${SCRIPT_DIR}")/proto/lightbulb.proto"
 
 # Create proto directory if it doesn't exist
 mkdir -p "${PROTO_DIR}"

@@ -12,7 +12,7 @@
 /build
 
 # generated proto files
-/src/proto
+# /src/proto
 
 # misc
 .DS_Store

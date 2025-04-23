@@ -27,6 +27,5 @@ coverage.xml
 .pytest_cache/
 
 # Generated gRPC code
-proto/*_pb2.py
-proto/*_pb2_grpc.py
-proto/__pycache__/ 
+# *_pb2.py
+# *_pb2_grpc.py

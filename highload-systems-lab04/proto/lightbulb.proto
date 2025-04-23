@@ -38,11 +38,8 @@ message SetColorTemperatureRequest {
   int32 temperature = 1; // 2700-6500K (typical range for lightbulbs)
 }
 
-// Request for streaming state updates
-message StreamStateRequest {
-  // Optional update interval in milliseconds (default: 1000)
-  int32 interval_ms = 1;
-}
+// Empty request for streaming state changes
+message StreamStateRequest {}
 
 // Current state of the lightbulb
 message LightbulbState {

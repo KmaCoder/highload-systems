@@ -47,9 +47,9 @@ export const setColorTemperature = async (temperature) => {
 };
 
 
-// Stream the lightbulb state
-export const streamState = (intervalMs = 1000, onStateUpdate, onError) => {
-  const request = new StreamStateRequest().setIntervalMs(intervalMs);
+// Stream the lightbulb state changes
+export const streamState = (onStateUpdate, onError) => {
+  const request = new StreamStateRequest();
   const stream = lightbulbClient.streamState(request, {});
   
   stream.on('data', (response) => {

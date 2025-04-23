@@ -1,108 +1,45 @@
-# Lightbulb Control System
+# Lightbulb Service with RabbitMQ Event Notification
 
-A simple system for controlling a virtual lightbulb using gRPC communication between a Python server and a React frontend.
+This project demonstrates a smart lightbulb control system with gRPC for the main API and RabbitMQ for event notifications.
 
-## Features
+## Project Components
 
-- Turn the lightbulb on and off
-- Adjust brightness (0-100%)
-- Change color temperature (2700K-6500K)
-- Real-time visualization of the lightbulb state
+1. **Python Backend**: gRPC service for controlling the lightbulb
+2. **Node.js Notification Service**: Express server that listens for RabbitMQ events
+3. **RabbitMQ**: Message broker for event distribution
+4. **Frontend**: React application to control the lightbulb (communicates with gRPC)
 
-## Project Structure
+## Quick Start with Docker Compose
 
-```
-.
-├── backend/                 # Python gRPC server
-│   ├── proto/               # Protocol Buffer definitions 
-│   ├── server.py            # Server implementation
-│   ├── generate_protos.py   # Script to generate gRPC code
-│   └── requirements.txt     # Python dependencies
-├── frontend/                # React frontend
-│   ├── public/              # Static files
-│   ├── src/                 # React source code
-│   │   ├── components/      # React components
-│   │   ├── services/        # gRPC service client
-│   │   └── proto/           # Generated gRPC web code
-│   └── package.json         # Node.js dependencies
-├── envoy.yaml               # Envoy proxy configuration for gRPC-Web
-└── docker-compose.yml       # Docker Compose for Envoy
-```
+The easiest way to run all services together is using Docker Compose:
 
-## Setup and Running
+```bash
+# At first build app containers for Python backend, Node.js notification service and React Frontend
+docker compose build
 
-### Prerequisites
-
-- Python 3.7+
-- Node.js 14+
-- Docker and Docker Compose (for the Envoy proxy)
-
-### Backend Setup
-
-1. Navigate to the backend directory:
-   ```
-   cd backend
-   ```
-
-2. Install Python dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-3. Generate Python code from protobuf definitions:
-   ```
-   ./generate_protos.sh
-   ```
-
-4. Start the gRPC server:
-   ```
-   python server.py
-   ```
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
-   ```
-   cd frontend
-   ```
-
-2. Install Node.js dependencies:
-   ```
-   npm install
-   ```
-
-3. Generate JavaScript code from protobuf definitions:
-   ```
-   npm run generate-proto
-   ```
-
-4. Start the React development server:
-   ```
-   npm start
-   ```
-
-### Envoy Proxy (for gRPC-Web)
-
-Start the Envoy proxy using Docker Compose:
-```
+# Start RabbitMQ, Envy Proxy for gRPC, and application containers
 docker compose up -d
 ```
 
-## Accessing the Application
+## Services & Ports
 
-After starting all components, you can access the application at:
-- Frontend: http://localhost:3000
+- **RabbitMQ**: 
+  - AMQP: 5672
+  - Management UI: 15672 (http://localhost:15672 - guest/guest)
+- **Python Backend**: 50051
+- **Envy gRPC Proxy**: 8080
+- **Node.js Notification Service**: 50052
+- **Frontend**: 3000
 
-## Architecture
+## Event Types
 
-- The Python server implements the gRPC service defined in the protobuf file
-- The Envoy proxy translates between gRPC-Web (browser) and gRPC (server)
-- The React frontend communicates with the server via gRPC-Web
+The system publishes the following event types to RabbitMQ:
 
-## Technologies Used
+- `power_changed`: When the lightbulb is turned on or off
+- `brightness_changed`: When the brightness level is adjusted
+- `color_temperature_changed`: When the color temperature is modified
 
-- gRPC and Protocol Buffers
-- Python
-- React.js
-- Envoy Proxy
-- Docker
+Each event includes:
+- `old_value`: The previous state value
+- `new_value`: The new state value
+- `current_state`: The complete current state of the lightbulb

@@ -11,20 +11,37 @@ A gRPC server implemented in Python that simulates controlling a lighting bulb.
 
 ## Setup
 
+1. Create `venv` and activate it
+
+```bash
+python -m venv venv
+source ./venv/bin/activate
+
+# Check the location of your Python interpreter
+which python
+```
+
 1. Install Python dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
+
+If stuck on building wheel run
+
+```bash
+pip install --upgrade pip
+pip install --upgrade setuptools wheel
+```
 
 2. Generate Python code from the Protocol Buffer definition:
-   ```
-   ./generate_protos.sh
-   ```
+```bash
+./generate_protos.sh
+```
 
 3. Start the server:
-   ```
-   python server.py
-   ```
+```bash
+python server.py
+```
 
 The server will run on port 50051.
 
